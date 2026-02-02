@@ -1,4 +1,4 @@
-local MAJOR, MINOR = "LibAPIAutoComplete-1.0", 5
+local MAJOR, MINOR = "LibAPIAutoComplete-1.0", 6
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 
@@ -32,6 +32,24 @@ local function LoadBlizzard_APIDocumentation()
   if #APIDocumentation.systems == 0 then
     -- workaround nil errors when loading PetConstantsDocumentation.lua
     Constants.PetConsts = Constants.PetConsts or {
+      MAX_STABLE_SLOTS = 200,
+      MAX_SUMMONABLE_PETS = 25,
+      MAX_SUMMONABLE_HUNTER_PETS = 5,
+      NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL = 5,
+      NUM_PET_SLOTS = 205,
+      EXTRA_PET_STABLE_SLOT = 5,
+      STABLED_PETS_FIRST_SLOT_INDEX = 6
+    }
+    Constants.PetConsts_PostCata = Constants.PetConsts_PostCata or {
+      MAX_STABLE_SLOTS = 200,
+      MAX_SUMMONABLE_PETS = 25,
+      MAX_SUMMONABLE_HUNTER_PETS = 5,
+      NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL = 5,
+      NUM_PET_SLOTS = 205,
+      EXTRA_PET_STABLE_SLOT = 5,
+      STABLED_PETS_FIRST_SLOT_INDEX = 6
+    }
+    Constants.PetConsts_Wrath = Constants.PetConsts_Wrath or {
       MAX_STABLE_SLOTS = 200,
       MAX_SUMMONABLE_PETS = 25,
       MAX_SUMMONABLE_HUNTER_PETS = 5,
