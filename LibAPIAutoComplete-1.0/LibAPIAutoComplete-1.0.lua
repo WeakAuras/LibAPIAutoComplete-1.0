@@ -278,7 +278,7 @@ function lib:disable(editbox)
   editbox.APIDoc_oldOnTextChanged = nil
 end
 
-function lib:addLine(apiInfo)
+function lib:addLine(lines, apiInfo)
   local name
   if apiInfo.Type == "System" then
     name = apiInfo.Namespace
@@ -287,7 +287,7 @@ function lib:addLine(apiInfo)
   elseif apiInfo.Type == "Event" then
     name = apiInfo.LiteralName
   end
-  self.data:Insert({ name = name, apiInfo = apiInfo })
+  tinsert(lines, { name = name, apiInfo = apiInfo })
 end
 
 ---Search a word in documentation, set results in lib.data
@@ -295,6 +295,7 @@ end
 ---@param config Params
 function lib:Search(word, config)
   self.data:Flush()
+  local lines = {}
   if word and #word > 3 then
     local lowerWord = word:lower();
     local nsName, rest = lowerWord:match("^([%w%_]+)(.*)")
@@ -309,14 +310,14 @@ function lib:Search(word, config)
           if systemMatch then
             if funcName then
               if apiInfo:MatchesSearchString(funcName) then
-                self:addLine(apiInfo)
+                self:addLine(lines, apiInfo)
               end
             else
-              self:addLine(apiInfo)
+              self:addLine(lines, apiInfo)
             end
           else
             if apiInfo:MatchesSearchString(lowerWord) then
-              self:addLine(apiInfo)
+              self:addLine(lines, apiInfo)
             end
           end
         end
@@ -325,32 +326,35 @@ function lib:Search(word, config)
       if not config.disableEvents then
         if systemMatch and rest == "" then
           for _, apiInfo in ipairs(systemInfo.Events) do
-            self:addLine(apiInfo)
+            self:addLine(lines, apiInfo)
           end
         else
           for _, apiInfo in ipairs(systemInfo.Events) do
             if apiInfo:MatchesSearchString(lowerWord) then
-              self:addLine(apiInfo)
+              self:addLine(lines, apiInfo)
             end
           end
         end
       end
 
-      if self.data:GetSize() > maxMatches then
+      if #lines > maxMatches then
         break
       end
     end
+    self.data:InsertTable(lines)
   end
 end
 
 ---set in lib.data the list of systems
 function lib:ListSystems()
   self.data:Flush()
+  local lines = {}
   for i, systemInfo in ipairs(APIDocumentation.systems) do
     if systemInfo.Namespace and #systemInfo.Functions > 0 then
-      self:addLine(systemInfo)
+      self:addLine(lines, systemInfo)
     end
   end
+  self.data:InsertTable(lines)
 end
 
 ---Hide, or Show and fill APIDoc widget, using lib.data data
